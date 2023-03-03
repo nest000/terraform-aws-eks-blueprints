@@ -319,7 +319,6 @@ module "karpenter" {
 
   count = var.enable_karpenter ? 1 : 0
 
-  path                                        = var.policy_path
   helm_config                                 = var.karpenter_helm_config
   irsa_policies                               = var.karpenter_irsa_policies
   node_iam_instance_profile                   = var.karpenter_node_iam_instance_profile

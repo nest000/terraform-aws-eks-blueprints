@@ -45,12 +45,6 @@ variable "addon_context" {
   })
 }
 
-variable "path" {
-  description = "Path in which to create the Karpenter policy"
-  type        = string
-  default     = "/"
-}
-
 variable "sqs_queue_managed_sse_enabled" {
   description = "Enable server-side encryption (SSE) for a SQS queue"
   type        = bool

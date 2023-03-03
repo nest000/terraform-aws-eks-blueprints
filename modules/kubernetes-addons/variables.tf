@@ -33,12 +33,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "policy_path" {
-  description = "Path in which to create policies"
-  type        = string
-  default     = "/"
-}
-
 variable "irsa_iam_role_path" {
   description = "IAM role path for IRSA roles"
   type        = string
