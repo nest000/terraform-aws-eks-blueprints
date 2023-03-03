@@ -60,6 +60,7 @@ resource "aws_cloudwatch_event_target" "aws_node_termination_handler_rule_target
 resource "aws_iam_policy" "aws_node_termination_handler_irsa" {
   description = "IAM role policy for AWS Node Termination Handler"
   name        = "${var.addon_context.eks_cluster_id}-aws-nth-irsa"
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.irsa_policy.json
   tags        = var.addon_context.tags
 }

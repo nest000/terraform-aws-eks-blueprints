@@ -16,6 +16,7 @@ module "helm_addon" {
 resource "aws_iam_policy" "aws_fsx_csi_driver" {
   name        = "${var.addon_context.eks_cluster_id}-fsx-csi-policy"
   description = "IAM Policy for AWS FSx CSI Driver"
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.aws_fsx_csi_driver.json
   tags        = var.addon_context.tags
 }

@@ -58,6 +58,7 @@ module "helm_addon" {
 resource "aws_iam_policy" "velero" {
   name        = "${var.addon_context.eks_cluster_id}-velero"
   description = "Provides Velero permissions to backup and restore cluster resources"
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.velero.json
 
   tags = var.addon_context.tags

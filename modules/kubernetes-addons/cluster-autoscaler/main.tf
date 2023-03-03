@@ -17,12 +17,14 @@ module "helm_addon" {
     repository  = "https://kubernetes.github.io/autoscaler"
     namespace   = local.namespace
     description = "Cluster AutoScaler helm Chart deployment configuration."
-    values = [templatefile("${path.module}/values.yaml", {
-      aws_region     = var.addon_context.aws_region_name
-      eks_cluster_id = var.addon_context.eks_cluster_id
-      image_tag      = "v${var.eks_cluster_version}.0"
-    })]
-    },
+    values      = [
+      templatefile("${path.module}/values.yaml", {
+        aws_region     = var.addon_context.aws_region_name
+        eks_cluster_id = var.addon_context.eks_cluster_id
+        image_tag      = "v${var.eks_cluster_version}.0"
+      })
+    ]
+  },
     var.helm_config
   )
 
@@ -52,6 +54,7 @@ module "helm_addon" {
 resource "aws_iam_policy" "cluster_autoscaler" {
   name        = "${var.addon_context.eks_cluster_id}-${local.name}-irsa"
   description = "Cluster Autoscaler IAM policy"
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.cluster_autoscaler.json
 
   tags = var.addon_context.tags

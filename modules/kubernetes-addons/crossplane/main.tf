@@ -114,6 +114,7 @@ resource "aws_iam_policy" "jet_aws_provider" {
   count       = var.jet_aws_provider.enable == true ? 1 : 0
   description = "Crossplane Jet AWS Provider IAM policy"
   name        = "${var.addon_context.eks_cluster_id}-${local.jet_aws_provider_sa}-irsa"
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.s3_policy.json
   tags        = var.addon_context.tags
 }

@@ -10,6 +10,7 @@ module "helm_addon" {
 resource "aws_iam_policy" "aws_privateca_issuer" {
   description = "AWS PCA issuer IAM policy"
   name        = "${var.addon_context.eks_cluster_id}-${local.helm_config["name"]}-irsa"
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.aws_privateca_issuer.json
   tags        = var.addon_context.tags
 }

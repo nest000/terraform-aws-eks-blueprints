@@ -18,6 +18,7 @@ resource "aws_cloudwatch_log_group" "aws_for_fluent_bit" {
 resource "aws_iam_policy" "aws_for_fluent_bit" {
   name        = "${var.addon_context.eks_cluster_id}-fluentbit"
   description = "IAM Policy for AWS for FluentBit"
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.irsa.json
   tags        = var.addon_context.tags
 }

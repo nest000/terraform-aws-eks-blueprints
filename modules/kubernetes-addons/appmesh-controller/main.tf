@@ -49,5 +49,6 @@ module "helm_addon" {
 resource "aws_iam_policy" "this" {
   name        = "${var.addon_context.eks_cluster_id}-appmesh"
   description = "IAM Policy for App Mesh"
+  path        = var.addon_context.irsa_iam_role_path
   policy      = data.aws_iam_policy_document.this.json
 }
