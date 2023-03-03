@@ -5,7 +5,7 @@ module "aws_vpc_cni" {
 
   count = var.enable_amazon_eks_vpc_cni ? 1 : 0
 
-  enable_ipv6 = var.enable_ipv6
+  enable_ipv6  = var.enable_ipv6
   addon_config = merge(
     {
       kubernetes_version = local.eks_cluster_version
@@ -25,7 +25,7 @@ module "aws_coredns" {
 
   # Amazon EKS CoreDNS addon
   enable_amazon_eks_coredns = var.enable_amazon_eks_coredns
-  addon_config = merge(
+  addon_config              = merge(
     {
       kubernetes_version = local.eks_cluster_version
     },
@@ -34,7 +34,7 @@ module "aws_coredns" {
 
   # Self-managed CoreDNS addon via Helm chart
   enable_self_managed_coredns = var.enable_self_managed_coredns
-  helm_config = merge(
+  helm_config                 = merge(
     {
       kubernetes_version = local.eks_cluster_version
     },
@@ -75,7 +75,7 @@ module "aws_ebs_csi_driver" {
 
   # Amazon EKS aws-ebs-csi-driver addon
   enable_amazon_eks_aws_ebs_csi_driver = var.enable_amazon_eks_aws_ebs_csi_driver
-  addon_config = merge(
+  addon_config                         = merge(
     {
       kubernetes_version = local.eks_cluster_version
     },
@@ -86,7 +86,7 @@ module "aws_ebs_csi_driver" {
 
   # Self-managed aws-ebs-csi-driver addon via Helm chart
   enable_self_managed_aws_ebs_csi_driver = var.enable_self_managed_aws_ebs_csi_driver
-  helm_config = merge(
+  helm_config                            = merge(
     {
       kubernetes_version = local.eks_cluster_version
     },
@@ -117,7 +117,7 @@ module "argocd" {
   source        = "./argocd"
   helm_config   = var.argocd_helm_config
   applications  = var.argocd_applications
-  addon_config  = { for k, v in local.argocd_addon_config : k => v if v != null }
+  addon_config  = {for k, v in local.argocd_addon_config : k => v if v != null}
   addon_context = local.addon_context
 }
 
@@ -182,7 +182,9 @@ module "aws_load_balancer_controller" {
   source            = "./aws-load-balancer-controller"
   helm_config       = var.aws_load_balancer_controller_helm_config
   manage_via_gitops = var.argocd_manage_add_ons
-  addon_context     = merge(local.addon_context, { default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name] })
+  addon_context     = merge(local.addon_context, {
+    default_repository = local.amazon_container_image_registry_uris[data.aws_region.current.name]
+  })
 }
 
 module "aws_node_termination_handler" {
@@ -317,6 +319,7 @@ module "karpenter" {
 
   count = var.enable_karpenter ? 1 : 0
 
+  path                                        = var.policy_path
   helm_config                                 = var.karpenter_helm_config
   irsa_policies                               = var.karpenter_irsa_policies
   node_iam_instance_profile                   = var.karpenter_node_iam_instance_profile
@@ -396,9 +399,9 @@ module "portworx" {
   addon_context = local.addon_context
 }
 module "prometheus" {
-  count       = var.enable_prometheus ? 1 : 0
-  source      = "./prometheus"
-  helm_config = var.prometheus_helm_config
+  count                                = var.enable_prometheus ? 1 : 0
+  source                               = "./prometheus"
+  helm_config                          = var.prometheus_helm_config
   #AWS Managed Prometheus Workspace
   enable_amazon_prometheus             = var.enable_amazon_prometheus
   amazon_prometheus_workspace_endpoint = var.amazon_prometheus_workspace_endpoint
@@ -560,7 +563,7 @@ module "opentelemetry_operator" {
 
   # Amazon EKS ADOT addon
   enable_amazon_eks_adot = var.enable_amazon_eks_adot
-  addon_config = merge(
+  addon_config           = merge(
     {
       kubernetes_version = var.eks_cluster_version
     },
@@ -777,7 +780,7 @@ module "app_2048" {
 module "emr_on_eks" {
   source = "./emr-on-eks"
 
-  for_each = { for k, v in var.emr_on_eks_config : k => v if var.enable_emr_on_eks }
+  for_each = {for k, v in var.emr_on_eks_config : k => v if var.enable_emr_on_eks}
 
   # Kubernetes Namespace + Role/Role Binding
   create_namespace       = try(each.value.create_namespace, true)
@@ -803,7 +806,8 @@ module "emr_on_eks" {
 
   # EMR Virtual Cluster
   name           = try(each.value.name, each.key)
-  eks_cluster_id = data.aws_eks_cluster.eks_cluster.id # Data source is tied to `sleep` to ensure data plane is ready first
+  eks_cluster_id = data.aws_eks_cluster.eks_cluster.id
+  # Data source is tied to `sleep` to ensure data plane is ready first
 
   tags = merge(var.tags, try(each.value.tags, {}))
 }
