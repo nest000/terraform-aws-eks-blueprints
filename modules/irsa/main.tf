@@ -1,6 +1,5 @@
 locals {
   eks_oidc_issuer_url = replace(var.eks_oidc_provider_arn, "/^(.*provider/)/", "")
-  //eks_oidc_issuer_url = replace(var.eks_oidc_provider_arn, "https://", "")
 }
 
 resource "kubernetes_namespace_v1" "irsa" {
@@ -50,7 +49,7 @@ resource "kubernetes_service_account_v1" "irsa" {
 resource "alks_iamrole" "irsa" {
   count = var.irsa_iam_policies != null ? 1 : 0
 
-  name = try(coalesce(var.irsa_iam_role_name, format("%s-%s-%s", var.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa")), null)
+  name               = try(coalesce(var.irsa_iam_role_name, format("%s-%s-%s", var.eks_cluster_id, trim(var.kubernetes_service_account, "-*"), "irsa")), null)
   assume_role_policy = data.aws_iam_policy_document.aws_assume_role_policy.json
 
   tags = var.tags
@@ -81,4 +80,11 @@ data "aws_iam_policy_document" "aws_assume_role_policy" {
       ]
     }
   }
+}
+
+resource "aws_iam_role_policy_attachment" "irsa" {
+  count = var.irsa_iam_policies != null ? length(var.irsa_iam_policies) : 0
+
+  policy_arn = var.irsa_iam_policies[count.index]
+  role       = aws_iam_role.irsa[0].name
 }
