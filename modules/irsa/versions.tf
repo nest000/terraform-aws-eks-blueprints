@@ -4,7 +4,7 @@ terraform {
   required_providers {
     alks = {
       source  = "Cox-Automotive/alks"
-      version = "~>2.7.1"
+      version = "~>2.8.0"
     }
     aws = {
       source  = "hashicorp/aws"
